@@ -1,16 +1,17 @@
 version: 0.2
-
-
 phases:
   pre_build:
     commands:
-      - mvn clean install
-      - echo Logging in to Amazon ECR...
+      - echo Logging in to Amazon ECR.... 
       - aws --version
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=688977122149.dkr.ecr.ap-south-1.amazonaws.com/javatechie-registry
+      - $(aws ecr get-login --no-include-email --region us-east-1)
+      # Get commit hash value to tag the image
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      # Replace with your application name
+      - APPLICATION_NAME=auto-escola
+      # Replace with this 435320931996.dkr.ecr.ap-south-1.amazonaws.com to your repository URI
+      - REPOSITORY_URI=593047862826.dkr.ecr.us-east-1.amazonaws.com/auto-escola/$APPLICATION_NAME
   build:
     commands:
       - echo Build started on `date`
